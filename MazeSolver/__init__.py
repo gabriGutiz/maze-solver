@@ -1,0 +1,2 @@
+
+from .Maze import Maze
