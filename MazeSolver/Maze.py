@@ -1,5 +1,8 @@
 """
     Maze class
+
+    The maze generator algotithm is based on OrWestSide implementation:
+        https://github.com/OrWestSide/python-scripts/blob/master/maze.py
 """
 
 import random
