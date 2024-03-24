@@ -7,6 +7,17 @@ from colorama import init, Fore
 
 
 class Maze:
+    wall: str
+    cell: str
+    start: str
+    end: str
+    unvisited: str
+    paths: str
+    maze: list[list[str]]
+    start_position: tuple[int]
+    end_position: tuple[int]
+    height: int
+    width: int
     
     def __init__(
         self,
@@ -18,8 +29,8 @@ class Maze:
     ) -> None:
         
         if isinstance(dimensions, tuple):
-            self.height = dimensions[0]
-            self.width = dimensions[-1]
+            self.height = dimensions[-1]
+            self.width = dimensions[0]
         else:
             self.width = self.height = dimensions
         self.wall = wall_char
@@ -27,7 +38,9 @@ class Maze:
         self.start = start_char
         self.end = end_char
         self.unvisited = 'u'
+        self.paths = ['┘', '┌', '└','┐','|','—']
         self.maze = []
+        self.solved = False
         self.start_position = ()
         self.end_position = ()
 
@@ -262,23 +275,94 @@ class Maze:
         return s_cells
 
 
-    def print(self) -> None:
+    def print(self, print_coords=False) -> None:
         init()
-        for i in range(0, self.height):
-            for j in range(0, self.width):
-                match self.maze[i][j]:
-                    case self.unvisited:
-                        print(Fore.WHITE + str(self.maze[i][j].strip()), end=' ')
-                    case self.cell:
-                        print(Fore.GREEN + str(self.maze[i][j].strip()), end=' ')
-                    case self.start:
-                        print(Fore.WHITE + str(self.maze[i][j].strip()), end=' ')
-                    case self.end:
-                        print(Fore.CYAN + str(self.maze[i][j].strip()), end=' ')
-                    case _:
-                        print(Fore.RED + str(self.maze[i][j].strip()), end=' ')
 
+        if print_coords:
+            print(' '*len(str(self.height)), end=' ')
+            for i in range(0, self.width):
+                print(Fore.YELLOW + str(i)[-1], end=' ')
             print('\n', end='')
+
+
+        for i in range(0, self.height):
+            if print_coords:
+                print(Fore.YELLOW + (len(str(self.height)) - len(str(i)))*' ' + str(i), end=' ')
+
+            for j in range(0, self.width):
+                char = self.maze[i][j].strip()
+                if char in self.paths:
+                    print(Fore.GREEN + char, end=' ')
+                    continue
+                
+                match char:
+                    case self.unvisited:
+                        print(Fore.WHITE + char, end=' ')
+                    case self.cell:
+                        print(Fore.MAGENTA + char, end=' ')
+                    case self.start:
+                        print(Fore.WHITE + char, end=' ')
+                    case self.end:
+                        print(Fore.CYAN + char, end=' ')
+                    case _:
+                        print(Fore.RED + char, end=' ')
+
+            print(Fore.RESET + '\n', end='')
+
+
+    def get_coordinates_type(self, row, col):
+        if row >= self.height or col >= self.width:
+            return self.unvisited
+        return self.maze[row][col]
+
+
+    def solve(self, path: list[tuple]):
+        self.maze_solved = self.maze.copy()
+
+        paths = {
+            ( 1,  1): {
+                ( 0,  1): '┐',
+                ( 1,  0): '└'
+            },
+            ( 1, -1): {
+                ( 0,  1): '┌',
+                ( 0, -1): '┌',
+                ( 1,  0): '┘'
+            },
+            (-1, -1): {
+                (-1,  0): '┐',
+                ( 0,  1): '┘',
+                ( 1,  0): '└',
+                ( 0, -1): '└'
+            },
+            (-1,  1): {
+                (-1,  0): '┌',
+                ( 0,  1): '┘'
+            },
+            (-2,  0): '|',
+            ( 2,  0): '|',
+            ( 0, -2): '—',
+            ( 0,  2): '—'
+        }
+
+
+        for i in range(1, len(path)-1):
+            x, y = path[i]
+
+            last_x, last_y = path[i-1]
+            next_x, next_y = path[i+1]
+
+            difference = (next_x-last_x, next_y-last_y)
+            chars = paths.get(difference)
+
+            if not isinstance(chars, dict):
+                self.maze_solved[x][y] = chars
+            else:
+                diff_actual_last = (x-last_x, y-last_y)
+                char = chars.get(diff_actual_last)
+                self.maze_solved[x][y] = char
+
+        self.solved = True
 
 
     def __str__(self) -> str:
