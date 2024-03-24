@@ -272,7 +272,7 @@ class Maze:
                     case self.cell:
                         print(Fore.GREEN + str(self.maze[i][j].strip()), end=' ')
                     case self.start:
-                        print(Fore.YELLOW + str(self.maze[i][j].strip()), end=' ')
+                        print(Fore.WHITE + str(self.maze[i][j].strip()), end=' ')
                     case self.end:
                         print(Fore.CYAN + str(self.maze[i][j].strip()), end=' ')
                     case _:
