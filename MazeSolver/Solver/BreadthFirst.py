@@ -30,7 +30,7 @@ class BreadthFirst(SolverBase):
 
                 new_nodes.append(node.new_state(possible_state))
 
-        return self.solve(new_nodes)
+        return self._solve(new_nodes)
 
 
     def solve(self) -> Tree:
