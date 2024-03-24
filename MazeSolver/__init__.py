@@ -1,3 +1,3 @@
 
 from .Maze import Maze
-from .Solver.BreadthFirst import BreadthFirst
+from .Solver import *
