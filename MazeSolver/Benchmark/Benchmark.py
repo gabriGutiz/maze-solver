@@ -1,5 +1,5 @@
 """
-
+    Benchmark class for comparing solution algorithms
 """
 
 import json
