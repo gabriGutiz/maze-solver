@@ -14,7 +14,7 @@ class Maze:
         wall_char = '#',
         cell_char = '.',
         start_char = 'I',
-        end_char = 'E'
+        end_char = 'F'
     ) -> None:
         
         if isinstance(dimensions, tuple):
@@ -28,10 +28,28 @@ class Maze:
         self.end = end_char
         self.unvisited = 'u'
         self.maze = []
+        self.start_position = ()
+        self.end_position = ()
 
         self._generate()
 
 
+    def _set_start_and_end(self):
+        paths = []
+        for i in range(0, len(self.maze)):
+            for j in range(0, len(self.maze[i])):
+                if self.maze[i][j] == self.cell:
+                    paths.append((i, j))
+
+        self.start_position = random.choice(paths)
+        self.end_position = random.choice(paths)
+
+        while self.start_position == self.end_position:
+            self.end_position = random.choice(paths)
+
+        self.maze[self.start_position[0]][self.start_position[1]] = self.start
+        self.maze[self.end_position[0]][self.end_position[1]] = self.end
+                
 
     def _generate(self):
         for i in range(0, self.height):
@@ -221,12 +239,13 @@ class Maze:
                 if (wall[0] == rand_wall[0] and wall[1] == rand_wall[1]):
                     walls.remove(wall)
             
-
         # Mark the remaining unvisited cells as walls
         for i in range(0, self.height):
             for j in range(0, self.width):
                 if (self.maze[i][j] == self.unvisited):
                     self.maze[i][j] = self.wall
+
+        self._set_start_and_end()
 
 
     def _surrounding_cells(self, rand_wall):
@@ -252,6 +271,10 @@ class Maze:
                         print(Fore.WHITE + str(self.maze[i][j].strip()), end=' ')
                     case self.cell:
                         print(Fore.GREEN + str(self.maze[i][j].strip()), end=' ')
+                    case self.start:
+                        print(Fore.YELLOW + str(self.maze[i][j].strip()), end=' ')
+                    case self.end:
+                        print(Fore.CYAN + str(self.maze[i][j].strip()), end=' ')
                     case _:
                         print(Fore.RED + str(self.maze[i][j].strip()), end=' ')
 
