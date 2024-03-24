@@ -13,7 +13,7 @@ class BreadthFirst(SolverBase):
        SolverBase.__init__(self, maze) 
 
 
-    def solve(self, nodes: list[Tree] = None) -> Tree:
+    def _solve(self, nodes: list[Tree] = None) -> Tree:
         if not nodes:
             nodes = [Tree(self.maze.start_position)]
 
@@ -31,3 +31,9 @@ class BreadthFirst(SolverBase):
                 new_nodes.append(node.new_state(possible_state))
 
         return self.solve(new_nodes)
+
+
+    def solve(self) -> Tree:
+        if self.maze.solved:
+            return None
+        return self._solve()
