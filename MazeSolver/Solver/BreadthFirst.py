@@ -1,3 +1,6 @@
+"""
+    BreadthFirst class with Breadth First Search algorithm implementation
+"""
 
 from MazeSolver.Maze import Maze
 from MazeSolver.Tree import Tree
