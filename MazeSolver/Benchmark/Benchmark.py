@@ -21,7 +21,7 @@ class Benchmark:
         end = time.time()
 
         exec_time = (end - start) * 10**3
-        result = Result(exec_time, solution)
+        result = Result(exec_time, solution, solver.expanded_nodes)
 
         return result
 
@@ -66,10 +66,16 @@ class Benchmark:
                     "results": results
                 })
 
-        csv_result = f'dimension;steps;{";".join(algorithms)}'
+        algos = ";".join([f"\"{a}(time|nodes)\"" for a in algorithms])
+        csv_result = f'\"dimension\";\"steps\";{algos}'
         for result in result_cases:
-            times = ";".join([str(result.get("results").get(algo)) for algo in algorithms])
-            csv_result += f'\n{result.get("dimension")};{result.get("steps")};{times}'
+            values = ''
+            for algo in algorithms:
+                algo_res = result.get("results").get(algo)
+                values += '"' + '|'.join([str(val) for val in algo_res.values()]) + '";'
+            values = values.removesuffix(';')
+
+            csv_result += f'\n\"{result.get("dimension")}\";\"{result.get("steps")}\";{values}'
 
         with open("stats.txt", 'w') as file:
             file.write(csv_result)
@@ -92,7 +98,10 @@ class Benchmark:
                 results = {}
                 for solver in solvers:
                     result = self._get_result(solver(maze))
-                    results[solver.__name__] = result.time
+                    results[solver.__name__] = {
+                        "time": result.time,
+                        "expanded_nodes": result.expanded_nodes
+                    }
                     maze_group["solution"] = str(result.solution).replace('>', '-')
 
                 maze_group["results"] = results
