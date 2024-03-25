@@ -45,13 +45,10 @@ class Benchmark:
                     "maze": str(maze)
                 }
 
-                results = []
+                results = {}
                 for solver in solvers:
                     result = self._get_result(solver(maze))
-                    results.append({
-                        "algorithm": solver.__name__,
-                        "ms_time": result.time,
-                    })
+                    results[solver.__name__] = result.time
                     maze_group["solution"] = str(result.solution).replace('>', '-')
 
                 maze_group["results"] = results
