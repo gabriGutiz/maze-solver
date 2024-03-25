@@ -31,6 +31,50 @@ class Benchmark:
             json.dump(self.results, file)
 
 
+    def _export_stats(self):
+        algorithms = []
+        result_cases = []
+        for dimensions_group in self.results:
+            cases = dimensions_group.get("cases")
+
+            if not cases:
+                continue
+
+            dimension = dimensions_group.get("dimension")
+
+            if not dimension:
+                dimension = '-'
+
+            for case in cases:
+                solution = case.get("solution")
+
+                steps = '-'
+                if solution:
+                    steps = len(solution.split('-'))
+
+                results = case.get("results")
+                if not results:
+                    continue
+
+                for algorithm in results.keys():
+                    if algorithm not in algorithms:
+                        algorithms.append(algorithm)
+
+                result_cases.append({
+                    "dimension": dimension,
+                    "steps": steps,
+                    "results": results
+                })
+
+        csv_result = f'dimension;steps;{";".join(algorithms)}'
+        for result in result_cases:
+            times = ";".join([str(result.get("results").get(algo)) for algo in algorithms])
+            csv_result += f'\n{result.get("dimension")};{result.get("steps")};{times}'
+
+        with open("stats.txt", 'w') as file:
+            file.write(csv_result)
+
+
     def generate_results(
         self,
         dimensions=[10, 15, 20, 25, 30, 100],
@@ -67,3 +111,5 @@ class Benchmark:
 
     def export_results(self):
         self._save_mazes()
+
+        self._export_stats()
