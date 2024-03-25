@@ -32,10 +32,10 @@ class Benchmark:
             json.dump(self.results, file)
 
 
-    def generate_results(self, solvers=[DepthFirst, BreadthFirst, AStar]) -> None:
+    def generate_results(self, number_of_tests=10, solvers=[DepthFirst, BreadthFirst, AStar]) -> None:
         for dim in self.dimensions:
             cases = []
-            for _ in range(5):
+            for _ in range(number_of_tests):
                 maze = Maze(dim)
                 maze_group = {
                     "maze": str(maze)
@@ -47,8 +47,8 @@ class Benchmark:
                     results.append({
                         "algorithm": solver.__name__,
                         "ms_time": result.time,
-                        "solution": str(result.solution).replace('>', '-')
                     })
+                    maze_group["solution"] = str(result.solution).replace('>', '-')
 
                 maze_group["results"] = results
                 cases.append(maze_group)
