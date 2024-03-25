@@ -29,6 +29,7 @@ class AStar(SolverBase):
         new_nodes = []
         for possible_state in self._get_possible_paths(node.state):
             if self.maze.get_coordinates_type(possible_state[0], possible_state[1]) == self.maze.end:
+                self.expanded_nodes += 1
                 return node.new_state(possible_state)
             if possible_state in node.get_positions():
                 continue
@@ -40,6 +41,7 @@ class AStar(SolverBase):
 
         for new_node in new_nodes:
             solution = self._solve(new_node)
+            self.expanded_nodes += 1
             if solution:
                 return solution
 

@@ -10,7 +10,7 @@ from MazeSolver.Solver.SolverBase import SolverBase
 class BreadthFirst(SolverBase):
 
     def __init__(self, maze: Maze):
-       SolverBase.__init__(self, maze) 
+        SolverBase.__init__(self, maze) 
 
 
     def _solve(self, nodes: list[Tree] = None) -> Tree:
@@ -24,10 +24,12 @@ class BreadthFirst(SolverBase):
 
             for possible_state in possible_states:
                 if self.maze.get_coordinates_type(possible_state[0], possible_state[1]) == self.maze.end:
+                    self.expanded_nodes += 1
                     return node.new_state(possible_state)
                 if possible_state in node.get_positions():
                     continue
 
+                self.expanded_nodes += 1
                 new_nodes.append(node.new_state(possible_state))
 
         return self._solve(new_nodes)

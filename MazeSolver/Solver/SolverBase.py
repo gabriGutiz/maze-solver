@@ -11,6 +11,7 @@ class SolverBase:
 
     def __init__(self, maze: Maze):
         self.maze = maze
+        self.expanded_nodes = 0
 
 
     def _get_possible_paths(self, coordinates) -> list[tuple[int]]:

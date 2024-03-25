@@ -36,6 +36,7 @@ def exec_example():
     print('='*13 + ' SOLUTION ' + '='*13)
     solution = solver.solve()
     print(str(solution).replace('>', '-'))
+    print(f'EXPANDED NODES: {solver.expanded_nodes}')
 
     print('='*12 + ' SOLVED MAZE ' + '='*12)
     maze.solve(solution.get_positions())
