@@ -11,8 +11,7 @@ from .Result import Result
 
 class Benchmark:
 
-    def __init__(self, dimensions=[10, 15, 20, 25, 30, 100]) -> None:
-        self.dimensions = dimensions
+    def __init__(self) -> None:
         self.results = []
 
 
@@ -32,8 +31,13 @@ class Benchmark:
             json.dump(self.results, file)
 
 
-    def generate_results(self, number_of_tests=10, solvers=[DepthFirst, BreadthFirst, AStar]) -> None:
-        for dim in self.dimensions:
+    def generate_results(
+        self,
+        dimensions=[10, 15, 20, 25, 30, 100],
+        number_of_tests=10,
+        solvers=[DepthFirst, BreadthFirst, AStar]
+    ) -> None:
+        for dim in dimensions:
             cases = []
             for _ in range(number_of_tests):
                 maze = Maze(dim)
@@ -58,6 +62,10 @@ class Benchmark:
                 "cases": cases
             })
         return self.results
+
+
+    def get_result(self, solver) -> Result:
+        return self._get_result(solver)
 
 
     def export_results(self):
