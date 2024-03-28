@@ -40,16 +40,18 @@ class Benchmark:
 
 
     def _save_mazes(self):
-        print(f'Exporting results.json...')
+        file_name = Benchmark._get_file_name("results", "json")
 
-        with open(Benchmark._get_file_name("results", "json"), 'w') as file:
+        print(f'Results exported: {file_name}')
+        with open(file_name, 'w') as file:
             json.dump(self.results, file)
 
 
     def _export_stats(self):
-        print(f'Exporting stats.json...')
-        algorithms = []
-        result_cases = []
+        print(f'Exporting stats txt...')
+        
+        csv_result = f'\"id\";\"dimension\";\"steps\";\"algo\";\"time\";\"nodes\"'
+        id = 0
         for dimensions_group in self.results:
             cases = dimensions_group.get("cases")
 
@@ -62,6 +64,7 @@ class Benchmark:
                 dimension = '-'
 
             for case in cases:
+                id += 1
                 solution = case.get("solution")
 
                 steps = '-'
@@ -72,28 +75,15 @@ class Benchmark:
                 if not results:
                     continue
 
-                for algorithm in results.keys():
-                    if algorithm not in algorithms:
-                        algorithms.append(algorithm)
+                for algorithm, res in results.items():
+                    time = res.get("time")
+                    nodes = res.get("expanded_nodes")
+                    csv_result += f'\n\"{id}\";\"{dimension}\";\"{steps}\";\"{algorithm}\";\"{time}\";\"{nodes}\"'
 
-                result_cases.append({
-                    "dimension": dimension,
-                    "steps": steps,
-                    "results": results
-                })
+        file_name = Benchmark._get_file_name("stats", 'txt')
+        print(f'Stats exported: {file_name}')
 
-        algos = ";".join([f"\"{a}(time|nodes)\"" for a in algorithms])
-        csv_result = f'\"dimension\";\"steps\";{algos}'
-        for result in result_cases:
-            values = ''
-            for algo in algorithms:
-                algo_res = result.get("results").get(algo)
-                values += '"' + '|'.join([str(val) for val in algo_res.values()]) + '";'
-            values = values.removesuffix(';')
-
-            csv_result += f'\n\"{result.get("dimension")}\";\"{result.get("steps")}\";{values}'
-
-        with open(Benchmark._get_file_name("stats", 'txt'), 'w') as file:
+        with open(file_name, 'w') as file:
             file.write(csv_result)
 
 
