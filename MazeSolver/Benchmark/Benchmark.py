@@ -4,6 +4,7 @@
 
 import json
 import time
+import os
 
 from MazeSolver import Maze
 from MazeSolver.Solver import AStar, BreadthFirst, DepthFirst
@@ -26,12 +27,27 @@ class Benchmark:
         return result
 
 
+    def _get_file_name(file_name, extension):
+        create_name = lambda it: f'{file_name}.{extension}' if it == 0 else f'{file_name}({it}).{extension}'
+
+        i = 0
+        file = create_name(i)
+        while os.path.exists(file):
+            i += 1
+            file = create_name(i)
+
+        return file
+
+
     def _save_mazes(self):
-        with open("results.json", 'w') as file:
+        print(f'Exporting results.json...')
+
+        with open(Benchmark._get_file_name("results", "json"), 'w') as file:
             json.dump(self.results, file)
 
 
     def _export_stats(self):
+        print(f'Exporting stats.json...')
         algorithms = []
         result_cases = []
         for dimensions_group in self.results:
@@ -77,7 +93,7 @@ class Benchmark:
 
             csv_result += f'\n\"{result.get("dimension")}\";\"{result.get("steps")}\";{values}'
 
-        with open("stats.txt", 'w') as file:
+        with open(Benchmark._get_file_name("stats", 'txt'), 'w') as file:
             file.write(csv_result)
 
 
@@ -88,6 +104,7 @@ class Benchmark:
         solvers=[DepthFirst, BreadthFirst, AStar]
     ) -> None:
         for dim in dimensions:
+            print(f'Running solutions for dimension {dim}...')
             cases = []
             for _ in range(number_of_tests):
                 maze = Maze(dim)

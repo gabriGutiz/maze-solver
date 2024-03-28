@@ -12,7 +12,7 @@ def main():
 
 def benchmark():
     benchmark = Benchmark()
-    benchmark.generate_results()
+    benchmark.generate_results([7, 10, 15, 25, 50, 75, 100, 150], 100)
     benchmark.export_results()
 
 
