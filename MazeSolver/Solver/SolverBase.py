@@ -16,10 +16,10 @@ class SolverBase:
 
     def _get_possible_paths(self, coordinates) -> list[tuple[int]]:
         movements = [
-            (0, -1),
-            (0, 1),
             (-1, 0),
-            (1, 0)
+            (0, -1),
+            (1, 0),
+            (0, 1)
         ]
 
         possible_coords = []
