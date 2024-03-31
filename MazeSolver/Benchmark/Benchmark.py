@@ -68,7 +68,7 @@ class Benchmark:
 
                 steps = '-'
                 if solution:
-                    steps = len(solution.split('-'))
+                    steps = len(solution.split('-')) - 1
 
                 results = case.get("results")
                 if not results:

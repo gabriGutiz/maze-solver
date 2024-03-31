@@ -13,7 +13,7 @@ class AStar(SolverBase):
        SolverBase.__init__(self, maze) 
 
 
-    def _calculate_cost(self, coor: tuple) -> float:
+    def _calculate_heuristic(self, coor: tuple) -> float:
         diff = (
             abs(self.maze.end_position[0] - coor[0]),
             abs(self.maze.end_position[1] - coor[1])
@@ -35,7 +35,7 @@ class AStar(SolverBase):
                 continue
             new_nodes.append(node.new_state(possible_state))
 
-        new_nodes = sorted(new_nodes, key=lambda x: self._calculate_cost(x.state))
+        new_nodes = sorted(new_nodes, key=lambda x: self._calculate_heuristic(x.state))
         if not new_nodes:
             return None
 
