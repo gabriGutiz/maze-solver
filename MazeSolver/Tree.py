@@ -3,27 +3,25 @@ class Tree:
     def __init__(self, state):
         self.state = state
         self.nodes = []
-        self.path = str(state)
+        self.path = [state]
 
 
     def get_positions(self):
-        positions = []
-        for coordinate in self.path.split('>'):
-            coordinate = coordinate.strip(')').strip('(')
-
-            coordinates = coordinate.split(', ')
-            positions.append((int(coordinates[0]), int(coordinates[1])))
-        return positions
+        return self.path
 
 
     def new_state(self, state):
         new_tree = Tree(state)
 
         new_tree.nodes = []
-        new_tree.path = self.path + f'>{state}'
+        new_tree.path = self.path + [state]
 
         return new_tree
 
 
+    def path_size(self):
+        return len(self.path) - 1
+
+
     def __str__(self):
-        return self.path
+        return '-'.join([str(p) for p in self.path])
