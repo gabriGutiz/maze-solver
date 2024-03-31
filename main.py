@@ -28,19 +28,22 @@ def exec_example():
     maze.print()
 
     solvers = [AStar, DepthFirst, BreadthFirst]
-    terminal_menu = TerminalMenu(["A*", "Depth First Search", "Breadth First Search"])
+    selection = ["A*", "Depth First Search", "Breadth First Search"]
+    terminal_menu = TerminalMenu(selection)
     choice_index = terminal_menu.show()
 
     solver = solvers[choice_index](maze)
 
     print('='*13 + ' SOLUTION ' + '='*13)
     solution = solver.solve()
-    print(str(solution).replace('>', '-'))
+    print(solution)
+    print('ALGORITHM: ' + selection[choice_index])
+    print(f'SOLUTION NODES: {solution.path_size()}')
     print(f'EXPANDED NODES: {solver.expanded_nodes}')
 
     print('='*12 + ' SOLVED MAZE ' + '='*12)
     maze.solve(solution.get_positions())
-    maze.print()
+    maze.print(print_coords=True)
 
 
 if __name__ == '__main__':
