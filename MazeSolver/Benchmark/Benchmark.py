@@ -51,7 +51,6 @@ class Benchmark:
         print(f'Exporting stats txt...')
         
         csv_result = f'\"id\";\"dimension\";\"steps\";\"algo\";\"time\";\"nodes\"'
-        id = 0
         for dimensions_group in self.results:
             cases = dimensions_group.get("cases")
 
@@ -64,7 +63,7 @@ class Benchmark:
                 dimension = '-'
 
             for case in cases:
-                id += 1
+                id = case.get("id")
                 solution = case.get("solution")
 
                 steps = '-'
@@ -93,13 +92,16 @@ class Benchmark:
         number_of_tests=10,
         solvers=[DepthFirst, BreadthFirst, AStar]
     ) -> None:
+        id = 0
         for dim in dimensions:
             print(f'Running solutions for dimension {dim}...')
             cases = []
             for _ in range(number_of_tests):
+                id += 1
                 maze = Maze(dim)
                 maze_group = {
-                    "maze": str(maze)
+                    "maze": str(maze),
+                    "id": id
                 }
 
                 results = {}
