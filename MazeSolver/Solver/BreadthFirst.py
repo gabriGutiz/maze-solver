@@ -23,12 +23,13 @@ class BreadthFirst(SolverBase):
             possible_states = self._get_possible_paths(node.state)
 
             for possible_state in possible_states:
+                self.expanded_nodes += 1
                 if self.maze.get_coordinates_type(possible_state[0], possible_state[1]) == self.maze.end:
                     return node.new_state(possible_state)
                 if possible_state in node.get_positions():
+                    self.expanded_nodes -= 1
                     continue
 
-                self.expanded_nodes += 1
                 new_nodes.append(node.new_state(possible_state))
 
         return self._solve(new_nodes)
