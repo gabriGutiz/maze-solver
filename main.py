@@ -12,7 +12,7 @@ def main():
 
 def benchmark():
     benchmark = Benchmark()
-    benchmark.generate_results([7, 10, 15, 25, 50, 75, 100, 150], 100)
+    benchmark.generate_results([7, 10, 15, 25, 50, 75, 100, 150, 200, 250], 200)
     benchmark.export_results()
 
 
@@ -22,7 +22,11 @@ def exec_example():
     if not dimension:
         dimension = 10
 
-    maze = Maze(int(dimension))
+    random_pos = [False, True]
+    terminal_menu = TerminalMenu(["Fixed start and end rows", "Random positions"])
+    choice_index = terminal_menu.show()
+
+    maze = Maze(int(dimension), random_positions=random_pos[choice_index])
 
     print('='*10 + ' GENERATED MAZE ' + '='*10)
     maze.print()

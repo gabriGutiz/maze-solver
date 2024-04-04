@@ -28,7 +28,8 @@ class Maze:
         wall_char = '#',
         cell_char = '.',
         start_char = 'I',
-        end_char = 'F'
+        end_char = 'F',
+        random_positions = False
     ) -> None:
         
         if isinstance(dimensions, tuple):
@@ -47,27 +48,40 @@ class Maze:
         self.start_position = ()
         self.end_position = ()
 
-        self._generate()
+        self._generate(random_positions)
 
 
-    def _set_start_and_end(self):
-        paths = []
-        for i in range(0, len(self.maze)):
-            for j in range(0, len(self.maze[i])):
-                if self.maze[i][j] == self.cell:
-                    paths.append((i, j))
+    def _set_start_and_end(self, random_positions):
+        if random_positions:
+            paths = []
+            for i in range(0, len(self.maze)):
+                for j in range(0, len(self.maze[i])):
+                    if self.maze[i][j] == self.cell:
+                        paths.append((i, j))
 
-        self.start_position = random.choice(paths)
-        self.end_position = random.choice(paths)
-
-        while self.start_position == self.end_position:
+            self.start_position = random.choice(paths)
             self.end_position = random.choice(paths)
+            while self.start_position == self.end_position:
+                self.end_position = random.choice(paths)
 
-        self.maze[self.start_position[0]][self.start_position[1]] = self.start
-        self.maze[self.end_position[0]][self.end_position[1]] = self.end
+            self.maze[self.start_position[0]][self.start_position[1]] = self.start
+            self.maze[self.end_position[0]][self.end_position[1]] = self.end
+        else:
+            # Set entrance and exit
+            for i in range(0, self.width):
+                if (self.maze[1][i] == self.cell):
+                    self.maze[0][i] = self.end
+                    self.end_position = (0, i)
+                    break
+
+            for i in range(self.width-1, 0, -1):
+                if (self.maze[self.height-2][i] == self.cell):
+                    self.maze[self.height-1][i] = self.start
+                    self.start_position = (self.height-1, i)
+                    break
                 
 
-    def _generate(self):
+    def _generate(self, random_positions):
         for i in range(0, self.height):
             line = []
             for j in range(0, self.width):
@@ -261,7 +275,7 @@ class Maze:
                 if (self.maze[i][j] == self.unvisited):
                     self.maze[i][j] = self.wall
 
-        self._set_start_and_end()
+        self._set_start_and_end(random_positions)
 
 
     def _surrounding_cells(self, rand_wall):
